@@ -1,6 +1,5 @@
 services:
   app:
-    container_name: app
     build: .
     depends_on:
       - db_prod
@@ -16,8 +15,6 @@ services:
       - "8080:80"
     volumes:
       - ./html:/var/www/html
-    networks:
-      - inft2201_network
     working_dir: /var/www/html
 
   db_prod:
@@ -30,13 +27,6 @@ services:
       - "5432:5432"
     volumes:
       - ./init-prod:/docker-entrypoint-initdb.d
-    networks:
-      - inft2201_network
-
-networks:
-  inft2201_network:
-    driver: bridge
-    name: inft2201_network
 
   db_test:
     image: postgres:16
