@@ -11,10 +11,52 @@ class Mail {
         $this->pdo = $pdo;
     }
 
-    public function createMail($subject, $body) {
-        $stmt = $this->pdo->prepare("INSERT INTO mail (subject, body) VALUES (?, ?) RETURNING id");
+    public function createMail($subject, $body)
+    {
+        $stmt = $this->pdo->prepare(
+            "INSERT INTO mail (subject, body) VALUES (?, ?) RETURNING id"
+        );
         $stmt->execute([$subject, $body]);
 
-        return $stmt->fetchColumn();
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getMail($id)
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT * FROM mail WHERE id = ?"
+        );
+        $stmt->execute([$id]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllMail()
+    {
+        $stmt = $this->pdo->query(
+            "SELECT * FROM mail ORDER BY id"
+        );
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateMail($id, $subject, $body)
+    {
+        $stmt = $this->pdo->prepare(
+            "UPDATE mail SET subject = ?, body = ? WHERE id = ?"
+        );
+        $stmt->execute([$subject, $body, $id]);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    public function deleteMail($id)
+    {
+        $stmt = $this->pdo->prepare(
+            "DELETE FROM mail WHERE id = ?"
+        );
+        $stmt->execute([$id]);
+
+        return $stmt->rowCount() > 0;
     }
 }
